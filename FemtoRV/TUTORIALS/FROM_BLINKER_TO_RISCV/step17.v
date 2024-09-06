@@ -7,16 +7,22 @@
 `include "clockworks.v"
 `include "emitter_uart.v"
 
+`define NANO9K
+
 module Memory (
-   input             clk,
-   input      [31:0] mem_addr,  // address to be read
-   output reg [31:0] mem_rdata, // data read from memory
-   input   	     mem_rstrb, // goes high when processor wants to read
-   input      [31:0] mem_wdata, // data to be written
-   input      [3:0]  mem_wmask	// masks for writing the 4 bytes (1=write byte)
+   input                clk,
+   input       [31:0]   mem_addr,   // address to be read
+   output reg  [31:0]   mem_rdata,  // data read from memory
+   input                mem_rstrb,  // goes high when processor wants to read
+   input       [31:0]   mem_wdata,  // data to be written
+   input       [3:0]    mem_wmask	// masks for writing the 4 bytes (1=write byte) 
 );
 
+`ifndef NANO9K
    reg [31:0] MEM [0:1535]; // 1536 4-bytes words = 6 Kb of RAM in total
+`else
+   reg [31:0] MEM [0:255]; // 256 4-bytes words = 1Kb of RAM in total
+`endif // NANO9K
 
 `ifdef BENCH
    localparam slow_bit=12;
@@ -120,13 +126,13 @@ endmodule
 
 
 module Processor (
-    input 	  clk,
-    input 	  resetn,
-    output [31:0] mem_addr, 
-    input [31:0]  mem_rdata, 
-    output 	  mem_rstrb,
-    output [31:0] mem_wdata,
-    output [3:0]  mem_wmask
+    input 	         clk,
+    input 	         resetn,
+    output  [31:0]   mem_addr, 
+    input   [31:0]   mem_rdata, 
+    output 	         mem_rstrb,
+    output  [31:0]   mem_wdata,
+    output  [3:0]    mem_wmask
 );
 
    reg [31:0] PC=0;        // program counter
@@ -163,17 +169,17 @@ module Processor (
    wire [6:0] funct7 = instr[31:25];
    
    // The registers bank
-   reg [31:0] RegisterBank [0:31];
-   reg [31:0] rs1; // value of source
-   reg [31:0] rs2; //  registers.
-   wire [31:0] writeBackData; // data to be written to rd
-   wire        writeBackEn;   // asserted if data should be written to rd
+   reg   [31:0]   RegisterBank [0:31];
+   reg   [31:0]   rs1; // value of source
+   reg   [31:0]   rs2; //  registers.
+   wire  [31:0]   writeBackData; // data to be written to rd
+   wire           writeBackEn;   // asserted if data should be written to rd
 
 `ifdef BENCH   
    integer     i;
    initial begin
       for(i=0; i<32; ++i) begin
-	 RegisterBank[i] = 0;
+	      RegisterBank[i] = 0;
       end
    end
 `endif   
@@ -198,19 +204,18 @@ module Processor (
    // left and right shifts, saves silicium !)
    function [31:0] flip32;
       input [31:0] x;
-      flip32 = {x[ 0], x[ 1], x[ 2], x[ 3], x[ 4], x[ 5], x[ 6], x[ 7], 
-		x[ 8], x[ 9], x[10], x[11], x[12], x[13], x[14], x[15], 
-		x[16], x[17], x[18], x[19], x[20], x[21], x[22], x[23],
-		x[24], x[25], x[26], x[27], x[28], x[29], x[30], x[31]};
+      flip32 = {
+                  x[ 0], x[ 1], x[ 2], x[ 3], x[ 4], x[ 5], x[ 6], x[ 7], 
+                  x[ 8], x[ 9], x[10], x[11], x[12], x[13], x[14], x[15], 
+                  x[16], x[17], x[18], x[19], x[20], x[21], x[22], x[23],
+                  x[24], x[25], x[26], x[27], x[28], x[29], x[30], x[31]
+               };
    endfunction
 
    wire [31:0] shifter_in = (funct3 == 3'b001) ? flip32(aluIn1) : aluIn1;
-   
    /* verilator lint_off WIDTH */
-   wire [31:0] shifter = 
-               $signed({instr[30] & aluIn1[31], shifter_in}) >>> aluIn2[4:0];
+   wire [31:0] shifter = $signed({instr[30] & aluIn1[31], shifter_in}) >>> aluIn2[4:0];
    /* verilator lint_on WIDTH */
-
    wire [31:0] leftshift = flip32(shifter);
    
 
@@ -225,14 +230,14 @@ module Processor (
    reg [31:0]  aluOut;
    always @(*) begin
       case(funct3)
-	3'b000: aluOut = (funct7[5] & instr[5]) ? aluMinus[31:0] : aluPlus;
-	3'b001: aluOut = leftshift;
-	3'b010: aluOut = {31'b0, LT};
-	3'b011: aluOut = {31'b0, LTU};
-	3'b100: aluOut = (aluIn1 ^ aluIn2);
-	3'b101: aluOut = shifter;
-	3'b110: aluOut = (aluIn1 | aluIn2);
-	3'b111: aluOut = (aluIn1 & aluIn2);	
+         3'b000: aluOut = (funct7[5] & instr[5]) ? aluMinus[31:0] : aluPlus;
+         3'b001: aluOut = leftshift;
+         3'b010: aluOut = {31'b0, LT};
+         3'b011: aluOut = {31'b0, LTU};
+         3'b100: aluOut = (aluIn1 ^ aluIn2);
+         3'b101: aluOut = shifter;
+         3'b110: aluOut = (aluIn1 | aluIn2);
+         3'b111: aluOut = (aluIn1 & aluIn2);	
       endcase
    end
 
@@ -240,13 +245,13 @@ module Processor (
    reg takeBranch;
    always @(*) begin
       case(funct3)
-	3'b000: takeBranch = EQ;
-	3'b001: takeBranch = !EQ;
-	3'b100: takeBranch = LT;
-	3'b101: takeBranch = !LT;
-	3'b110: takeBranch = LTU;
-	3'b111: takeBranch = !LTU;
-	default: takeBranch = 1'b0;
+         3'b000: takeBranch = EQ;
+         3'b001: takeBranch = !EQ;
+         3'b100: takeBranch = LT;
+         3'b101: takeBranch = !LT;
+         3'b110: takeBranch = LTU;
+         3'b111: takeBranch = !LTU;
+         default: takeBranch = 1'b0;
       endcase
    end
    
@@ -255,21 +260,21 @@ module Processor (
    // An adder used to compute branch address, JAL address and AUIPC.
    // branch->PC+Bimm    AUIPC->PC+Uimm    JAL->PC+Jimm
    // Equivalent to PCplusImm = PC + (isJAL ? Jimm : isAUIPC ? Uimm : Bimm)
-   wire [31:0] PCplusImm = PC + ( instr[3] ? Jimm[31:0] :
-				  instr[4] ? Uimm[31:0] :
-				             Bimm[31:0] );
+   wire [31:0] PCplusImm = PC + ( instr[3]   ? Jimm[31:0] :
+				               instr[4]          ? Uimm[31:0] :
+				               Bimm[31:0] );
    wire [31:0] PCplus4 = PC+4;
    
    // register write back
-   assign writeBackData = (isJAL || isJALR) ? PCplus4   :
-			      isLUI         ? Uimm      :
-			      isAUIPC       ? PCplusImm :
-			      isLoad        ? LOAD_data :
-			                      aluOut;
+   assign writeBackData = (isJAL || isJALR)  ? PCplus4   :
+                           isLUI             ? Uimm      :
+                           isAUIPC           ? PCplusImm :
+                           isLoad            ? LOAD_data :
+                           aluOut;
 
-   wire [31:0] nextPC = ((isBranch && takeBranch) || isJAL) ? PCplusImm   :
-	                                  isJALR   ? {aluPlus[31:1],1'b0} :
-	                                             PCplus4;
+   wire [31:0] nextPC = ((isBranch && takeBranch) || isJAL) ? PCplusImm             :
+                        isJALR                              ? {aluPlus[31:1],1'b0}  :
+                        PCplus4;
 
    wire [31:0] loadstore_addr = rs1 + (isStore ? Simm : Iimm);
    
@@ -284,21 +289,17 @@ module Processor (
    wire mem_halfwordAccess = funct3[1:0] == 2'b01;
 
 
-   wire [15:0] LOAD_halfword =
-	       loadstore_addr[1] ? mem_rdata[31:16] : mem_rdata[15:0];
+   wire [15:0] LOAD_halfword = loadstore_addr[1] ? mem_rdata[31:16] : mem_rdata[15:0];
 
-   wire  [7:0] LOAD_byte =
-	       loadstore_addr[0] ? LOAD_halfword[15:8] : LOAD_halfword[7:0];
+   wire  [7:0] LOAD_byte = loadstore_addr[0] ? LOAD_halfword[15:8] : LOAD_halfword[7:0];
 
    // LOAD, in addition to funct3[1:0], LOAD depends on:
    // - funct3[2] (instr[14]): 0->do sign expansion   1->no sign expansion
-   wire LOAD_sign =
-	!funct3[2] & (mem_byteAccess ? LOAD_byte[7] : LOAD_halfword[15]);
+   wire LOAD_sign = !funct3[2] & (mem_byteAccess ? LOAD_byte[7] : LOAD_halfword[15]);
 
-   wire [31:0] LOAD_data =
-         mem_byteAccess ? {{24{LOAD_sign}},     LOAD_byte} :
-     mem_halfwordAccess ? {{16{LOAD_sign}}, LOAD_halfword} :
-                          mem_rdata ;
+   wire [31:0] LOAD_data = mem_byteAccess       ? {{24{LOAD_sign}},     LOAD_byte} :
+                           mem_halfwordAccess   ? {{16{LOAD_sign}}, LOAD_halfword} :
+                           mem_rdata ;
 
    // Store
    // ------------------------------------------------------------------------
@@ -316,8 +317,7 @@ module Processor (
    //    0001, 0010, 0100 or 1000 if writing a byte
    //                                (depending on loadstore_addr[1:0])
 
-   wire [3:0] STORE_wmask =
-	      mem_byteAccess      ?
+   wire [3:0] STORE_wmask = mem_byteAccess      ?
 	            (loadstore_addr[1] ?
 		          (loadstore_addr[0] ? 4'b1000 : 4'b0100) :
 		          (loadstore_addr[0] ? 4'b0010 : 4'b0001)
@@ -338,48 +338,48 @@ module Processor (
    
    always @(posedge clk) begin
       if(!resetn) begin
-	 PC    <= 0;
-	 state <= FETCH_INSTR;
+         PC    <= 0;
+         state <= FETCH_INSTR;
       end else begin
-	 if(writeBackEn && rdId != 0) begin
-	    RegisterBank[rdId] <= writeBackData;
-	    // $display("r%0d <= %b (%d) (%d)",rdId,writeBackData,writeBackData,$signed(writeBackData));
-	    // For displaying what happens.
-	 end
-	 case(state)
-	   FETCH_INSTR: begin
-	      state <= WAIT_INSTR;
-	   end
-	   WAIT_INSTR: begin
-	      instr <= mem_rdata;
-	      state <= FETCH_REGS;
-	   end
-	   FETCH_REGS: begin
-	      rs1 <= RegisterBank[rs1Id];
-	      rs2 <= RegisterBank[rs2Id];
-	      state <= EXECUTE;
-	   end
-	   EXECUTE: begin
-	      if(!isSYSTEM) begin
-		 PC <= nextPC;
-	      end
-	      state <= isLoad  ? LOAD  : 
-		       isStore ? STORE : 
-		       FETCH_INSTR;
+         if(writeBackEn && rdId != 0) begin
+            RegisterBank[rdId] <= writeBackData;
+            // $display("r%0d <= %b (%d) (%d)",rdId,writeBackData,writeBackData,$signed(writeBackData));
+            // For displaying what happens.
+         end
+         case(state)
+            FETCH_INSTR: begin
+               state <= WAIT_INSTR;
+            end
+            WAIT_INSTR: begin
+               instr <= mem_rdata;
+               state <= FETCH_REGS;
+            end
+            FETCH_REGS: begin
+               rs1 <= RegisterBank[rs1Id];
+               rs2 <= RegisterBank[rs2Id];
+               state <= EXECUTE;
+            end
+            EXECUTE: begin
+               if(!isSYSTEM) begin
+            PC <= nextPC;
+               end
+               state <= isLoad  ? LOAD  : 
+                  isStore ? STORE : 
+                  FETCH_INSTR;
 `ifdef BENCH      
-	      if(isSYSTEM) $finish();
+               if(isSYSTEM) $finish();
 `endif      
-	   end
-	   LOAD: begin
-	      state <= WAIT_DATA;
-	   end
-	   WAIT_DATA: begin
-	      state <= FETCH_INSTR;
-	   end
-	   STORE: begin
-	      state <= FETCH_INSTR;
-	   end
-	 endcase 
+            end
+            LOAD: begin
+               state <= WAIT_DATA;
+            end
+            WAIT_DATA: begin
+               state <= FETCH_INSTR;
+            end
+            STORE: begin
+               state <= FETCH_INSTR;
+            end
+         endcase 
       end
    end
 
@@ -395,11 +395,11 @@ endmodule
 
 
 module SOC (
-    input 	     CLK, // system clock 
-    input 	     RESET, // reset button
-    output reg [4:0] LEDS, // system LEDs
-    input 	     RXD, // UART receive
-    output 	     TXD         // UART transmit
+    input 	         CLK,     // system clock 
+    input 	         RESET,   // reset button
+    output reg [4:0] LEDS,    // system LEDs
+    input 	         RXD,     // UART receive
+    output 	         TXD      // UART transmit
 );
 
    wire clk;
@@ -444,7 +444,7 @@ module SOC (
    
    always @(posedge clk) begin
       if(isIO & mem_wstrb & mem_wordaddr[IO_LEDS_bit]) begin
-	 LEDS <= mem_wdata;
+	      LEDS <= mem_wdata;
       end
    end
 
@@ -452,7 +452,7 @@ module SOC (
    wire uart_ready;
    
    corescore_emitter_uart #(
-      .clk_freq_hz(`CPU_FREQ*1000000),
+      .clk_freq_hz(`BOARD_FREQ*1000000),
       .baud_rate(1000000)			    
    ) UART(
       .i_clk(clk),
@@ -474,8 +474,8 @@ module SOC (
 `ifdef BENCH
    always @(posedge clk) begin
       if(uart_valid) begin
-	 $write("%c", mem_wdata[7:0] );
-	 $fflush(32'h8000_0001);
+	      $write("%c", mem_wdata[7:0] );
+	      $fflush(32'h8000_0001);
       end
    end
 `endif   
