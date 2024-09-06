@@ -21,6 +21,11 @@ module Memory (
 `ifndef NANO9K
    reg [31:0] MEM [0:1535]; // 1536 4-bytes words = 6 Kb of RAM in total
 `else
+   // RAM16SDP4
+   // 
+   // RAM16SDP4 is a semi-dual-port SSRAM with bit width of 4.
+   // MAX: 270 RAM16SDP4 -> reg [31:0] MEM [0:432] 
+   // reg [31:0] MEM [0:255] -> 160 RAM16SDP4
    reg [31:0] MEM [0:255]; // 256 4-bytes words = 1Kb of RAM in total
 `endif // NANO9K
 
