@@ -1,0 +1,4 @@
+*.dot
+*.dot.pid
+*.pid
+*.gprj.user

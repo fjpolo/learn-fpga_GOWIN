@@ -1,0 +1,17 @@
+# --- RECOMMENDED CLEAN SCRIPT ---
+
+# 1. Read the Verilog file
+read_verilog /mnt/c/Workspace/FPGA/learn-fpga_GOWIN/FemtoRV/TUTORIALS/FROM_BLINKER_TO_RISCV/step3.v
+
+# Set the top module and run the complete Gowin synthesis flow.
+# This single command handles all processing, optimization, and mapping 
+# to Gowin primitives (including Block RAM).
+synth_gowin -top SOC -json step3.json
+
+# 2. Print statistics (This is now showing the final, mapped netlist)
+stat
+
+show -prefix maf_final
+
+# (Optional: Write the mapped Verilog, but synth_gowin already wrote the JSON)
+write_verilog netlist_synth.v

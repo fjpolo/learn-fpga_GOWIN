@@ -20,7 +20,7 @@ module SOC (
    wire resetn; // internal reset signal, goes low on reset
    
    reg [4:0] PC = 0;
-   reg [4:0] MEM [0:20];
+   (* ram_style = "block" *) reg [4:0] MEM [0:20] /*synthesis syn_ramstyle="block_ram"*/;
    initial begin
        MEM[0]  = 5'b00000;
        MEM[1]  = 5'b00001;
@@ -50,6 +50,9 @@ module SOC (
 
    always @(posedge clk) begin
       leds <= MEM[PC];
+   end
+   
+   always @(posedge clk) begin
       PC <= (!resetn || PC==20) ? 0 : (PC+1);
    end
 
