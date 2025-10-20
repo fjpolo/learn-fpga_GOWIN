@@ -36,6 +36,25 @@ this tutorial. Our SOC is connected to the following signals:
 You can synthesize and send the bitstream to the device as follows:
 ```
 $ yosys step1.ys
+
+=== SOC ===
+
+        +----------Local Count, excluding submodules.
+        | 
+       22 wires
+       30 wire bits
+       22 public wires
+       30 public wire bits
+        5 ports
+        9 port bits
+       22 cells
+        5   ALU
+        5   DFF
+        1   GND
+        3   IBUF
+        1   LUT1
+        6   OBUF
+        1   VCC
 ```
 
 To flash the board, run [nano9k.gprj](step1/nano9k.gprj), synthesize, place&route and flash.
