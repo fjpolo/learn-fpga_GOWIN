@@ -4,7 +4,9 @@
  * Step 8: dynamic branch prediction
  */
  
+`ifdef FULLL_DEFAULT_NETTYPE
 `default_nettype none
+`endif
 `include "clockworks.v"
 `include "emitter_uart.v"
 

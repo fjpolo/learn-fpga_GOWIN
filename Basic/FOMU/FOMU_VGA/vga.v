@@ -4,7 +4,9 @@
 //      https://twitter.com/foone/status/1281740047461396480
 //      https://github.com/mntmn/fomu-vga
  
-`default_nettype none // Makes it easier to detect typos !
+`ifdef FULLL_DEFAULT_NETTYPE
+`default_nettype none
+`endif // Makes it easier to detect typos !
 
 module vga (
    input  clki,     // ->48 Mhz clock input

@@ -1,5 +1,7 @@
 `timescale 1ns/100ps  // 1 ns time unit, 100 ps resolution
-`default_nettype none // Makes it easier to detect typos !
+`ifdef FULLL_DEFAULT_NETTYPE
+`default_nettype none
+`endif // Makes it easier to detect typos !
 
 module test_sdram;
     reg clk;

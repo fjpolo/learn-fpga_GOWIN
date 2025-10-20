@@ -1,6 +1,8 @@
 // Borrowed from swapforth
 
+`ifdef FULLL_DEFAULT_NETTYPE
 `default_nettype none
+`endif
 
 `define CLKFREQ   12000000    // frequency of incoming signal 'clk'
 `define BAUD      115200

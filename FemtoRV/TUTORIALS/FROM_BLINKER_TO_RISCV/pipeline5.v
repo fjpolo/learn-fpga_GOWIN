@@ -4,7 +4,9 @@
  * Step 5: register forwarding 1/2: D reads and writes RF in same cycle
  */
  
+`ifdef FULLL_DEFAULT_NETTYPE
 `default_nettype none
+`endif
 `include "clockworks.v"
 `include "emitter_uart.v"
 

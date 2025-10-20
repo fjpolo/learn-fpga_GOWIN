@@ -3,7 +3,9 @@
  * Running programs from Mapped SPI flash
  */
 
+`ifdef FULLL_DEFAULT_NETTYPE
 `default_nettype none
+`endif
 `include "clockworks.v"
 `include "emitter_uart.v"
 `include "spi_flash.v"

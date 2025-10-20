@@ -1,7 +1,9 @@
 // Borrowed from swapforth by James Bowman: 
 //   https://github.com/jamesbowman/swapforth
 
+`ifdef FULLL_DEFAULT_NETTYPE
 `default_nettype none
+`endif
 
 `ifndef CLKFREQ
    `define CLKFREQ   12000000    // frequency of incoming signal 'clk'

@@ -19,8 +19,13 @@
  *     NEGATIVE_RESET if board's RESET pin goes low on reset
  *     ICE_STICK if board is an IceStick.
  */    
- 
+
+`define SIPEED_FPGA
+`ifdef SIPEED_FPGA
+`include "../../RTL/PLL/gowinpll.v"
+`else
 `include "../../RTL/PLL/femtopll.v"
+`endif
 
 `ifdef ECP5_EVN
 `define NEGATIVE_RESET

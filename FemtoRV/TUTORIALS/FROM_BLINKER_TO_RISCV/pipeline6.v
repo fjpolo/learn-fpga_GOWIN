@@ -4,7 +4,9 @@
  * Step 6: register forwarding 2/2: full register forwarding
  */
  
+`ifdef FULLL_DEFAULT_NETTYPE
 `default_nettype none
+`endif
 `include "clockworks.v"
 `include "emitter_uart.v"
 

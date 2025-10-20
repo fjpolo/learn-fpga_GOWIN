@@ -3,19 +3,19 @@
 (* top =  1  *)
 (* src = "/mnt/c/Workspace/FPGA/learn-fpga_GOWIN/FemtoRV/TUTORIALS/FROM_BLINKER_TO_RISCV/step1.v:8.1-24.10" *)
 module SOC(CLK, RESET, LEDS, RXD, TXD);
-  (* src = "/mnt/c/Workspace/FPGA/learn-fpga_GOWIN/FemtoRV/TUTORIALS/FROM_BLINKER_TO_RISCV/step1.v:9.12-9.15" *)
+  (* src = "/mnt/c/Workspace/FPGA/learn-fpga_GOWIN/FemtoRV/TUTORIALS/FROM_BLINKER_TO_RISCV/step1.v:9.17-9.20" *)
   input CLK;
   wire CLK;
-  (* src = "/mnt/c/Workspace/FPGA/learn-fpga_GOWIN/FemtoRV/TUTORIALS/FROM_BLINKER_TO_RISCV/step1.v:10.12-10.17" *)
+  (* src = "/mnt/c/Workspace/FPGA/learn-fpga_GOWIN/FemtoRV/TUTORIALS/FROM_BLINKER_TO_RISCV/step1.v:10.17-10.22" *)
   input RESET;
   wire RESET;
-  (* src = "/mnt/c/Workspace/FPGA/learn-fpga_GOWIN/FemtoRV/TUTORIALS/FROM_BLINKER_TO_RISCV/step1.v:11.18-11.22" *)
+  (* src = "/mnt/c/Workspace/FPGA/learn-fpga_GOWIN/FemtoRV/TUTORIALS/FROM_BLINKER_TO_RISCV/step1.v:11.23-11.27" *)
   output [4:0] LEDS;
   wire [4:0] LEDS;
-  (* src = "/mnt/c/Workspace/FPGA/learn-fpga_GOWIN/FemtoRV/TUTORIALS/FROM_BLINKER_TO_RISCV/step1.v:12.12-12.15" *)
+  (* src = "/mnt/c/Workspace/FPGA/learn-fpga_GOWIN/FemtoRV/TUTORIALS/FROM_BLINKER_TO_RISCV/step1.v:12.17-12.20" *)
   input RXD;
   wire RXD;
-  (* src = "/mnt/c/Workspace/FPGA/learn-fpga_GOWIN/FemtoRV/TUTORIALS/FROM_BLINKER_TO_RISCV/step1.v:13.12-13.15" *)
+  (* src = "/mnt/c/Workspace/FPGA/learn-fpga_GOWIN/FemtoRV/TUTORIALS/FROM_BLINKER_TO_RISCV/step1.v:13.17-13.20" *)
   output TXD;
   wire TXD;
   wire CLK_IBUF_I_O;

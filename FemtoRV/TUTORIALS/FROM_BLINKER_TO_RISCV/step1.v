@@ -3,7 +3,9 @@
  * DONE
  */
 
+`ifdef FULLL_DEFAULT_NETTYPE
 `default_nettype none
+`endif
 
 module SOC (
     input  wire CLK,        // system clock 

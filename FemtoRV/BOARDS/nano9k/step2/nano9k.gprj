@@ -1,0 +1,14 @@
+<?xml version="1" encoding="UTF-8"?>
+<!DOCTYPE gowin-fpga-project>
+<Project>
+    <Template>FPGA</Template>
+    <Version>5</Version>
+    <Device name="GW1NR-9C" pn="GW1NR-LV9QN88PC7/I6">gw1nr9c-019</Device>
+    <FileList>
+        <File path="src/top.v" type="file.verilog" enable="1"/>
+        <File path="C:/Workspace/FPGA/learn-fpga_GOWIN/FemtoRV/RTL/PLL/gowinpll.v" type="file.verilog" enable="1"/>
+        <File path="C:/Workspace/FPGA/learn-fpga_GOWIN/FemtoRV/RTL/PLL/nano9k/gowin_rpll/gowin_rpll.v" type="file.verilog" enable="1"/>
+        <File path="C:/Workspace/FPGA/learn-fpga_GOWIN/FemtoRV/TUTORIALS/FROM_BLINKER_TO_RISCV/step2.v" type="file.verilog" enable="1"/>
+        <File path="src/nano9K.cst" type="file.cst" enable="1"/>
+    </FileList>
+</Project>

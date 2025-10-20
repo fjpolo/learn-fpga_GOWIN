@@ -1,7 +1,9 @@
 // Special version of femtosoc for mecrisp-quintus (Forth interpreter) on IceStick, by Matthias Koch
 // mecrisp website: http://mecrisp.sourceforge.net/
 
-`default_nettype none // Makes it easier to detect typos !
+`ifdef FULLL_DEFAULT_NETTYPE
+`default_nettype none
+`endif // Makes it easier to detect typos !
 
 `define NRV_MINIRV32               // Mini config, can execute code stored in SPI flash from 1Mb offset (mapped to address 0x800000)
 `define NRV_RUN_FROM_SPI_FLASH     // Running code from the SPI flash (changes the constant for delay loops)

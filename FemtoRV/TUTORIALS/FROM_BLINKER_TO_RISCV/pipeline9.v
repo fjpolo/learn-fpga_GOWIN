@@ -17,7 +17,9 @@
                             // (required by Icarus/iverilog 
                             // and by some synth tools)
 
+`ifdef FULLL_DEFAULT_NETTYPE
 `default_nettype none
+`endif
 `include "clockworks.v"
 `include "emitter_uart.v"
 

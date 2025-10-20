@@ -8,7 +8,9 @@
 /*************************************************************************************/
 
 
-`default_nettype none // Makes it easier to detect typos !
+`ifdef FULLL_DEFAULT_NETTYPE
+`default_nettype none
+`endif // Makes it easier to detect typos !
 
 `include "femtosoc_config.v"        // User configuration of processor and SOC.
 `include "PLL/femtopll.v"           // The PLL (generates clock at NRV_FREQ)

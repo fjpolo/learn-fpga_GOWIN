@@ -1,4 +1,6 @@
-`default_nettype none // Makes it easier to detect typos !
+`ifdef FULLL_DEFAULT_NETTYPE
+`default_nettype none
+`endif // Makes it easier to detect typos !
 
 /*********************************************************************************/
 module HDMI_test_hires(
