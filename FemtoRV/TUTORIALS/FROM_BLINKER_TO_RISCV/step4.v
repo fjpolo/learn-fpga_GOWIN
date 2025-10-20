@@ -21,7 +21,7 @@ module SOC (
    wire clk;    // internal clock
    wire resetn; // internal reset signal, goes low on reset
    
-   reg [31:0] MEM [0:255]; 
+   (* ram_style = "block" *) reg [4:0] MEM [0:255] /*synthesis syn_ramstyle="block_ram"*/;
    reg [31:0] PC;       // program counter
    reg [31:0] instr;    // current instruction
    
